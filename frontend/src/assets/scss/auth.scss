@@ -1,0 +1,16 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.auth-img {
+  position: absolute;
+  width: 1878px;
+  height: 830px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
