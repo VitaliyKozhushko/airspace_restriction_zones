@@ -7,4 +7,10 @@
 - Frontend: [ReactJS](https://react.dev/)
 - UI Library: [Chakra UI](https://v2.chakra-ui.com/)
 - State management: [Redux](https://redux.js.org/)
-- Logo: YandexGPT + [Шедеврум](https://shedevrum.ai/)
+
+## Запуск
+
+- локально
+```shell
+docker compose up --build -d
+```

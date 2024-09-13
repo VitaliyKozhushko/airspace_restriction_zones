@@ -1,5 +1,5 @@
 .idea/
 
-__pycache__/
-
-*_symlink
+.env
+.env.backend.docker
+.env.frontend
