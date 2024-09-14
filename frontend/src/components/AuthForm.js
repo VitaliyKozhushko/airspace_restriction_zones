@@ -13,7 +13,8 @@ import {
   InputRightElement
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import axios from "axios";
+import useAxios from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
@@ -23,6 +24,8 @@ const AuthForm = () => {
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
+  const navigate = useNavigate();
+  const axios = useAxios();
 
   const titleForm = isLogin ? 'Вход' : 'Регистрация'
   const titleBtnDesicion = isLogin ? 'Регистрация' : 'Войти'
@@ -38,11 +41,20 @@ const AuthForm = () => {
       data.set('username', username)
       data.set('password', password)
       const response = await axios.post(`${process.env.REACT_APP_API_URL}${authUrl}`, data)
-
-      const result = response.data;
-      console.log(result)
+      if (isLogin) {
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        navigate('/personal_account')
+        return
+      }
+      toast({
+        description: 'Пользователь успешно зарегистрирован',
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      setLogin(true)
     } catch (error) {
-      console.log(error)
       const commonErr = isLogin
         ? 'Не получилось проверить логин и пароль. Попробуйте позже'
         : 'Не удалось зарегистрироваться. Попробуйте позже'
@@ -56,7 +68,6 @@ const AuthForm = () => {
         duration: 5000,
         isClosable: true,
       });
-      console.error('Ошибка авторизации:', error);
     } finally {
       setLoading(false)
     }
