@@ -8,14 +8,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Auth/>}/>
-        <Route
-          path="/personal_account"
-          element={
-            <ProtectedRoute>
-              <PersonalAccount/>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="personal_account" element={<PersonalAccount/>}/>
+        {/*<Route*/}
+        {/*  path="/personal_account"*/}
+        {/*  element={*/}
+        {/*    <ProtectedRoute>*/}
+        {/*      <PersonalAccount/>*/}
+        {/*    </ProtectedRoute>*/}
+        {/*  }*/}
+        {/*/>*/}
       </Routes>
     </Router>
   );
