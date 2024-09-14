@@ -15,7 +15,7 @@ class RegistrationView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response({
-            'message': 'User registered successfully'
+            'message': 'Пользователь успешно зарегистрирован'
         }, status=status.HTTP_201_CREATED)
 
 class LoginView(generics.GenericAPIView):
@@ -28,7 +28,7 @@ class LoginView(generics.GenericAPIView):
         if user:
             tokens = serializer.get_token(user)
             return Response(tokens, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Неверный логин или пароль'}, status=status.HTTP_400_BAD_REQUEST)
 
 class TokenRefreshView(TokenRefreshView):
     pass

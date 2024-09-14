@@ -12,6 +12,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password')
 
+    def validate(self, data):
+        if User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError({
+                'message': 'Пользователь с таким логином уже зарегистрирован'
+            })
+        return data
+
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -27,7 +34,7 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         user = authenticate(username=data['username'], password=data['password'])
         if not user:
-            raise serializers.ValidationError('Invalid credentials')
+            raise serializers.ValidationError({'message': 'Неверный логин или пароль'})
         return data
 
     def get_token(self, user):

@@ -13,12 +13,14 @@ import {
   InputRightElement
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import axios from "axios";
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setLogin] = useState(true);
-  const [showPasswd, setShowPasswd] = useState(false)
+  const [showPasswd, setShowPasswd] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
@@ -30,31 +32,33 @@ const AuthForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true)
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}${authUrl}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const data = new FormData()
+      data.set('username', username)
+      data.set('password', password)
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}${authUrl}`, data)
 
-      if (!response.ok) {
-        throw new Error('Ошибка при авторизации');
-      }
-
-      const data = await response.json();
-      console.log(data)
+      const result = response.data;
+      console.log(result)
     } catch (error) {
+      console.log(error)
+      const commonErr = isLogin
+        ? 'Не получилось проверить логин и пароль. Попробуйте позже'
+        : 'Не удалось зарегистрироваться. Попробуйте позже'
+      const errMes = !error?.response?.data
+        ? commonErr
+        : error.response.data.message[0]
       toast({
         title: "Ошибка",
-        description: "Неверный логин или пароль",
+        description: errMes,
         status: "error",
         duration: 5000,
         isClosable: true,
       });
       console.error('Ошибка авторизации:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -103,7 +107,7 @@ const AuthForm = () => {
             </InputGroup>
           </FormControl>
 
-          <Button colorScheme="blue" type="submit" width="full">
+          <Button isLoading={loading} colorScheme="blue" type="submit" width="full">
             {titleBtnAuth}
           </Button>
         </VStack>
