@@ -8,19 +8,31 @@ import {
   VStack,
   useToast,
   Heading,
-  Text
+  Text,
+  InputGroup,
+  InputRightElement
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLogin, setLogin] = useState(true);
+  const [showPasswd, setShowPasswd] = useState(false)
+
   const toast = useToast();
+
+  const titleForm = isLogin ? 'Вход' : 'Регистрация'
+  const titleBtnDesicion = isLogin ? 'Регистрация' : 'Войти'
+  const titleBtnAuth = isLogin ? 'Войти' : 'Зарегистрироваться'
+  const descriptionDesicion = isLogin ? 'Еще нет аккаунта?' : 'Уже есть аккаунт'
+  const authUrl = isLogin ? 'login' : 'registration'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://example.com/api/login', {
+      const response = await fetch(`https://example.com/api/${authUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,6 +58,12 @@ const AuthForm = () => {
     }
   };
 
+  const changeDesicion = () => {
+    setUsername('')
+    setPassword('')
+    setLogin(!isLogin)
+  };
+
   return (
     <Box
       className='auth-form'
@@ -54,7 +72,7 @@ const AuthForm = () => {
       borderWidth={1}
       borderRadius="lg"
       boxShadow="lg">
-      <Heading as='h3' size='lg' mb={5}>Вход</Heading>
+      <Heading as='h3' size='lg' mb={5}>{titleForm}</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
 
@@ -70,23 +88,30 @@ const AuthForm = () => {
 
           <FormControl id="password" isRequired>
             <FormLabel>Пароль</FormLabel>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Введите пароль"
-            />
+            <InputGroup>
+              <Input
+                type={showPasswd ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Введите пароль"
+              />
+              <InputRightElement width='4.5rem'>
+                <Button h='1.75rem' size='sm' onClick={() => setShowPasswd(!showPasswd)}>
+                  {showPasswd ? <ViewOffIcon/> : <ViewIcon/>}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
           </FormControl>
 
           <Button colorScheme="blue" type="submit" width="full">
-            Войти
+            {titleBtnAuth}
           </Button>
         </VStack>
       </form>
       <div className='change-decision'>
-        <Text fontSize='xs'>Еще нет аккаунта?</Text>
-        <Button colorScheme='messenger' variant='link'>
-          Регистрация
+        <Text fontSize='xs'>{descriptionDesicion}</Text>
+        <Button colorScheme='messenger' variant='link' onClick={changeDesicion}>
+          {titleBtnDesicion}
         </Button>
       </div>
     </Box>
