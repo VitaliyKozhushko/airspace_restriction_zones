@@ -26,13 +26,13 @@ const AuthForm = () => {
   const titleBtnDesicion = isLogin ? 'Регистрация' : 'Войти'
   const titleBtnAuth = isLogin ? 'Войти' : 'Зарегистрироваться'
   const descriptionDesicion = isLogin ? 'Еще нет аккаунта?' : 'Уже есть аккаунт'
-  const authUrl = isLogin ? 'login' : 'registration'
+  const authUrl = isLogin ? '/login' : '/registration'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`https://example.com/api/${authUrl}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}${authUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const AuthForm = () => {
       }
 
       const data = await response.json();
-
+      console.log(data)
     } catch (error) {
       toast({
         title: "Ошибка",

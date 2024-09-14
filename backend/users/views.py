@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from .serializers import RegistrationSerializer, LoginSerializer
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -7,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegistrationView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -22,7 +24,7 @@ class LoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = authenticate(email=serializer.validated_data['email'], password=serializer.validated_data['password'])
+        user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
         if user:
             tokens = serializer.get_token(user)
             return Response(tokens, status=status.HTTP_200_OK)
