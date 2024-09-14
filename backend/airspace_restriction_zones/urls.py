@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from users.views import RegistrationView, LoginView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/registration', RegistrationView.as_view(), name='registration'),
+    path('api/login', LoginView.as_view(), name='login'),
+    path('api/login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:

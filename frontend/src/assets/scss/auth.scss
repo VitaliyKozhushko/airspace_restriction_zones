@@ -1,0 +1,44 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.auth-img {
+  position: absolute;
+  width: 1878px;
+  height: 830px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.auth-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+
+  h3 {
+    text-align: center;
+  }
+
+  .change-decision {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    p {
+      font-size: .6rem
+    }
+    button {
+      font-size: .7rem;
+    }
+  }
+}

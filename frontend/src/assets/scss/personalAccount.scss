@@ -1,0 +1,13 @@
+.personal-account-page {
+  display: flex;
+  position: relative;
+
+  .logout-btn {
+    height: 64px;
+    background: transparent;
+    .logout-img {
+    width: 64px;
+    height: 64px;
+  }
+  }
+}

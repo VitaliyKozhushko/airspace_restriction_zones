@@ -2,4 +2,4 @@
 
 .env
 .env.backend.docker
-.env.frontend
+.env.frontend.copy
