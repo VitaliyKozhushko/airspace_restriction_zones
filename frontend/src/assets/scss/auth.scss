@@ -26,4 +26,19 @@
   h3 {
     text-align: center;
   }
+
+  .change-decision {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    p {
+      font-size: .6rem
+    }
+    button {
+      font-size: .7rem;
+    }
+  }
 }

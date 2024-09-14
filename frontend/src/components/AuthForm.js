@@ -7,7 +7,8 @@ import {
   Input,
   VStack,
   useToast,
-  Heading
+  Heading,
+  Text
 } from '@chakra-ui/react';
 
 const AuthForm = () => {
@@ -82,6 +83,12 @@ const AuthForm = () => {
           </Button>
         </VStack>
       </form>
+      <div className='change-decision'>
+        <Text fontSize='xs'>Еще нет аккаунта?</Text>
+        <Button colorScheme='messenger' variant='link'>
+          Регистрация
+        </Button>
+      </div>
     </Box>
   );
 };
