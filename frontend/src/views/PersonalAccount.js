@@ -1,7 +1,9 @@
+import Logout from "../components/Logout";
+
 function PersonalAccount() {
   return (
-    <div>
-      Hello
+    <div className='personal-account-page'>
+      <Logout/>
     </div>
   )
 }

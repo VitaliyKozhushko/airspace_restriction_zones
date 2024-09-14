@@ -5,7 +5,7 @@ import AuthForm from "../components/AuthForm";
 function Auth() {
   return (
     <div className='auth-page'>
-      <img className='auth-img' src={`${process.env.PUBLIC_URL}/img/main.png`} alt='main_photo'></img>
+      <img className='auth-img' src={`${process.env.PUBLIC_URL}/img/main.png`} alt='main_photo'/>
       <AuthForm/>
     </div>
   )
