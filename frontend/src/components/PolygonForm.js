@@ -7,7 +7,9 @@ import {
   Input,
   VStack,
   useToast,
-  Heading
+  Heading,
+  Textarea,
+  Text
 } from '@chakra-ui/react';
 import useAxios from "../services/axiosInstance";
 
@@ -15,6 +17,7 @@ function PolygonForm(){
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [loading, setLoading] = useState(false);
+  const [polygon, setPolygon] = useState('');
 
   const toast = useToast();
   const axios = useAxios();
@@ -53,7 +56,8 @@ function PolygonForm(){
 
   return (
     <Box
-      className='auth-form'
+      className='polygon-form'
+      w='100%'
       maxW="md"
       p={5}
       borderWidth={1}
@@ -82,6 +86,14 @@ function PolygonForm(){
                 placeholder="Введите долготу"
               />
           </FormControl>
+
+          <div className='textarea-block'>
+            <Text mb='8px'>Итоговое значение</Text>
+            <Textarea
+              value={polygon}
+              placeholder='Нажмите "Проверить", чтобы посмотреть итоговый результат'
+            />
+          </div>
 
           <Button isLoading={loading} colorScheme="blue" type="submit" width="full">
             Сохранить
