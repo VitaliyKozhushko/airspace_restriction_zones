@@ -14,3 +14,7 @@
 ```shell
 docker compose up --build -d
 ```
+
+## Прочее
+
+.env.frontend.copy - жесткая ссылка на файл .env в папке фронтенд
