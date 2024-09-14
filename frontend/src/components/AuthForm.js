@@ -6,7 +6,8 @@ import {
   FormLabel,
   Input,
   VStack,
-  useToast
+  useToast,
+  Heading
 } from '@chakra-ui/react';
 
 const AuthForm = () => {
@@ -52,6 +53,7 @@ const AuthForm = () => {
       borderWidth={1}
       borderRadius="lg"
       boxShadow="lg">
+      <Heading as='h3' size='lg' mb={5}>Вход</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
 
