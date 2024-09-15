@@ -34,7 +34,7 @@ function Dashboard() {
                 Главная
               </ChakraLink>
               <ChakraLink color='blue.500' as={ReactRouterLink} to={routes.listPolygon} fontWeight='500'>
-                Список полигона
+                Список полигонов
               </ChakraLink>
               <ChakraLink color='blue.500' as={ReactRouterLink} to={routes.createPolygon} fontWeight='500'>
                 Создание полигона
