@@ -1,10 +1,10 @@
-import Logout from "../components/Logout";
-import Polygon from './Polygon'
+import Polygon from './Polygon';
+import Dashboard from './Dashboard';
 
 function PersonalAccount() {
   return (
     <div className='personal-account-page'>
-      <Logout/>
+      <Dashboard/>
       <Polygon/>
     </div>
   )
