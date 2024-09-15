@@ -6,14 +6,11 @@ const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("access_token");
 
   if (!token) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   } else {
     const decodedToken = jwtDecode(token);
     const currentTime = Date.now() / 1000;
-    console.log(decodedToken.exp)
-    console.log(currentTime)
-    console.log(decodedToken.exp < currentTime)
-    if (decodedToken.exp < currentTime) return <Navigate to="/" />;
+    if (decodedToken.exp < currentTime) return <Navigate to="/login" />;
   }
 
   return children;

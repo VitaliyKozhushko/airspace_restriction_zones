@@ -44,7 +44,7 @@ const AuthForm = () => {
       if (isLogin) {
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
-        navigate('/personal_account')
+        navigate('/')
         return
       }
       toast({

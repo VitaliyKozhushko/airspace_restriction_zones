@@ -1,7 +1,8 @@
 FROM python:3.10-alpine
 
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-        libpq-dev gcc postgresql-dev python3-dev
+        postgresql-dev gcc musl-dev gdal-dev \
+        geos-dev proj-dev postgis libpq-dev python3-dev
 
 WORKDIR /app
 

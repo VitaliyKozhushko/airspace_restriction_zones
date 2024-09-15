@@ -29,6 +29,9 @@ if ENVIRONMENT == 'docker':
 else:
     environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
 
+os.environ['GDAL_LIBRARY_PATH'] = env('GDAL')
+os.environ['GEOS_LIBRARY_PATH'] = env('GEOS')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -58,7 +61,8 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
+    'corsheaders',
+    'polygon'
 ]
 
 MIDDLEWARE = [
@@ -99,7 +103,7 @@ WSGI_APPLICATION = 'airspace_restriction_zones.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': env('HOST_DB'),
         'USER': env('USER_DB'),
         'PASSWORD': env('PASSWD_DB'),
@@ -124,6 +128,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 SIMPLE_JWT = {
@@ -131,6 +138,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+CELERY_BROKER_URL = f'redis://{env("REDIS_SERVER")}:6379/0'
+CELERY_RESULT_BACKEND = f'redis://{env("REDIS_SERVER")}:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -155,3 +166,5 @@ STATIC_URL = env('STATIC_URL')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
