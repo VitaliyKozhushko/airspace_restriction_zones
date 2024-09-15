@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import useAxios from "../services/axiosInstance";
 import {LATITUDE, LONGITUDE} from '../referenceData/constants';
-import {transformCoordinate, arrToGeoJSON, ArrToGeoJSON} from '../services/coordinate';
+import {arrToGeoJSON} from '../services/coordinate';
 
 function PolygonForm(){
   const [polygonTitle, setPolygonTitle] = useState('');
@@ -37,7 +37,7 @@ function PolygonForm(){
     setTotalData(`${polygonTitle}:\n${JSON.stringify(polygon)}`)
     setLatitude('')
     setLongitude('')
-    setSaveDisable(false)
+    if (saveDisable && polygon.length >= 3) setSaveDisable(false)
   }, [polygon])
 
   const handleSubmit = async (e) => {
@@ -80,7 +80,7 @@ function PolygonForm(){
   function addCoordinate() {
     const validate = validateCoordinate()
     if (!validate) return
-    const result = transformCoordinate(+latitude, +longitude)
+    const result = [+latitude, +longitude]
     setPolygon(prevPolygon => [ ...prevPolygon, result])
   }
 
