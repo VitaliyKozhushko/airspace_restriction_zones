@@ -37,6 +37,10 @@
       .chakra-text {
         font-weight: 500;
       }
+
+      textarea{
+        pointer-events: none;
+      }
     }
   }
 }
