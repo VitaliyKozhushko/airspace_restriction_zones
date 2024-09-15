@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import useAxios from "../services/axiosInstance";
 import {LATITUDE, LONGITUDE} from '../referenceData/constants';
-import {transformCoordinate} from '../services/coordinate';
+import {transformCoordinate, arrToGeoJSON, ArrToGeoJSON} from '../services/coordinate';
 
 function PolygonForm(){
   const [polygonTitle, setPolygonTitle] = useState('');
@@ -30,6 +30,10 @@ function PolygonForm(){
   const axios = useAxios();
 
   useEffect(() => {
+    if (!polygonTitle) {
+      setTotalData('')
+      return
+    }
     setTotalData(`${polygonTitle}:\n${JSON.stringify(polygon)}`)
     setLatitude('')
     setLongitude('')
@@ -42,18 +46,23 @@ function PolygonForm(){
     try {
       const data = new FormData()
       data.set('title', polygonTitle)
-      data.set('polygon', polygon)
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/polygons`, data)
-      console.log(response)
-      // toast({
-      //   description: 'Пользователь успешно зарегистрирован',
-      //   status: "success",
-      //   duration: 5000,
-      //   isClosable: true,
-      // });
+      data.set('polygon', arrToGeoJSON(polygon))
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/polygons/`, data)
+      toast({
+        description: 'Полигон сохранен',
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      setPolygon([])
+      setPolygonTitle('')
+      setLatitude('')
+      setLongitude('')
+      setSaveDisable(true)
     } catch (error) {
+      console.log(error)
       const commonErr = 'Не получить сохранить полигон. Попробуйте позже'
-      const errMes = !error?.response?.data
+      const errMes = !error?.response?.data?.message
         ? commonErr
         : error.response.data.message[0]
       toast({
@@ -71,7 +80,7 @@ function PolygonForm(){
   function addCoordinate() {
     const validate = validateCoordinate()
     if (!validate) return
-    const result = transformCoordinate(latitude, longitude)
+    const result = transformCoordinate(+latitude, +longitude)
     setPolygon(prevPolygon => [ ...prevPolygon, result])
   }
 
@@ -93,7 +102,7 @@ function PolygonForm(){
       borderRadius="lg"
       boxShadow="lg">
       <Heading as='h3' size='lg' mb={5}>Полигон</Heading>
-      <form onSubmit={handleSubmit}>
+      <form>
         <VStack spacing={4}>
 
           <FormControl id="titlePolygon" isRequired>
@@ -135,11 +144,17 @@ function PolygonForm(){
             <Text mb='8px'>Итоговое значение</Text>
             <Textarea
               value={totalData}
-              placeholder='Нажмите "Проверить", чтобы посмотреть итоговый результат'
+              placeholder='Нажмите "Добавить", чтобы посмотреть итоговый результат'
               isReadOnly/>
           </div>
 
-          <Button isLoading={loading} colorScheme="blue" type="submit" width="full" isDisabled={saveDisable}>
+          <Button
+            type="button"
+            isLoading={loading}
+            colorScheme="blue"
+            width="full"
+            isDisabled={saveDisable}
+            onClick={handleSubmit}>
             Сохранить
           </Button>
         </VStack>

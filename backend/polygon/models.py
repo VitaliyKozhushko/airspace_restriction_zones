@@ -10,5 +10,9 @@ class Polygon(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = 'Список полигонов'
+        verbose_name_plural = 'Список полигонов'
+
     def __str__(self):
         return self.title
