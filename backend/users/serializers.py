@@ -27,6 +27,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    def to_internal_value(self, data):
+        try:
+            return super().to_internal_value(data)
+        except serializers.ValidationError as e:
+            if 'username' in e.detail:
+                e.detail['message'] = ['Пользователь с таким логином уже зарегистрирован']
+                del e.detail['username']
+            raise e
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()

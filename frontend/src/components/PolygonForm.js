@@ -41,15 +41,16 @@ function PolygonForm(){
     setLoading(true)
     try {
       const data = new FormData()
-      data.set('latitude', latitude)
-      data.set('longitude', longitude)
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/save`, data)
-      toast({
-        description: 'Пользователь успешно зарегистрирован',
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+      data.set('title', polygonTitle)
+      data.set('polygon', polygon)
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/polygons`, data)
+      console.log(response)
+      // toast({
+      //   description: 'Пользователь успешно зарегистрирован',
+      //   status: "success",
+      //   duration: 5000,
+      //   isClosable: true,
+      // });
     } catch (error) {
       const commonErr = 'Не получить сохранить полигон. Попробуйте позже'
       const errMes = !error?.response?.data
