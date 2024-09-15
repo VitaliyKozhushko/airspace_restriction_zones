@@ -1,6 +1,8 @@
 import Logout from "../components/Logout";
 import React from 'react';
-import { Box, Flex, VStack, Button} from '@chakra-ui/react';
+import { Box, Flex, VStack, Button, Link as ChakraLink} from '@chakra-ui/react';
+import { Link as ReactRouterLink } from 'react-router-dom';
+import {routes} from '../routes';
 
 function Dashboard() {
 
@@ -28,15 +30,15 @@ function Dashboard() {
             borderColor="gray.200"
           >
             <VStack align="start" spacing={4}>
-              <Button colorScheme='messenger' variant='link'>
+              <ChakraLink color='blue.500' as={ReactRouterLink} to={routes.home} fontWeight='500'>
                 Главная
-              </Button>
-              <Button colorScheme='messenger' variant='link'>
-                Создание полигона
-              </Button>
-              <Button colorScheme='messenger' variant='link'>
+              </ChakraLink>
+              <ChakraLink color='blue.500' as={ReactRouterLink} to={routes.listPolygon} fontWeight='500'>
                 Список полигона
-              </Button>
+              </ChakraLink>
+              <ChakraLink color='blue.500' as={ReactRouterLink} to={routes.createPolygon} fontWeight='500'>
+                Создание полигона
+              </ChakraLink>
             </VStack>
           </Box>
 

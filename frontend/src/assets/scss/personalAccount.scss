@@ -43,4 +43,12 @@
       }
     }
   }
+
+  .personal-account-content {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 }

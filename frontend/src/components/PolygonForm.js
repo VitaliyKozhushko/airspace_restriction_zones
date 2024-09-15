@@ -136,7 +136,7 @@ function PolygonForm(){
                 errorBorderColor='red.500'/>
           </FormControl>
 
-          <Button colorScheme="blue" type="button" width="full" onClick={addCoordinate}>
+          <Button colorScheme="blue" type="button" width="50%" onClick={addCoordinate}>
             Добавить
           </Button>
 
@@ -152,7 +152,7 @@ function PolygonForm(){
             type="button"
             isLoading={loading}
             colorScheme="blue"
-            width="full"
+            width="50%"
             isDisabled={saveDisable}
             onClick={handleSubmit}>
             Сохранить
