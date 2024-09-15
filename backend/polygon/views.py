@@ -13,3 +13,6 @@ class PolygonViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         polygon = serializer.save()
         calculate_antimeridian.delay(polygon.id, polygon.polygon.coords[0])
+
+    def get_queryset(self):
+        return super().get_queryset()
