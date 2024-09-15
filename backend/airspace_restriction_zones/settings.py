@@ -19,6 +19,9 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
+os.environ['GDAL_LIBRARY_PATH'] = '/usr/lib/libgdal.so'
+os.environ['GEOS_LIBRARY_PATH'] = '/usr/lib/x86_64-linux-gnu/libgeos_c.so'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -58,7 +61,8 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
+    'corsheaders',
+    'polygon'
 ]
 
 MIDDLEWARE = [
@@ -99,7 +103,7 @@ WSGI_APPLICATION = 'airspace_restriction_zones.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': env('HOST_DB'),
         'USER': env('USER_DB'),
         'PASSWORD': env('PASSWD_DB'),

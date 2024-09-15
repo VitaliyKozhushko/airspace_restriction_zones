@@ -8,11 +8,16 @@
 - UI Library: [Chakra UI](https://v2.chakra-ui.com/)
 - State management: [Redux](https://redux.js.org/)
 
-## Запуск
+## Команды
 
 - локально
 ```shell
 docker compose up --build -d
+```
+- поиск расширений GDAL и GEOS
+```shell
+find /usr/lib/ -name "libgdal*"
+find /usr/lib/ -name "libgeos*"
 ```
 
 ## Прочее
