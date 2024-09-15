@@ -3,6 +3,8 @@
 - Backend: [Django](https://django.fun/) + [DRF](https://www.django-rest-framework.org/)
 - Authentication: [PyJWT](https://pyjwt.readthedocs.io/en/stable/)
 - Database: [PostgreSQL](https://www.postgresql.org/)
+- Асинхронность: [Celery](https://docs.celeryq.dev/)
+- Брокер сообщений: [Redis](https://redis.io/)
 - Mapping: [Folium](https://python-visualization.github.io/folium/latest/index.html)
 - Frontend: [ReactJS](https://react.dev/)
 - UI Library: [Chakra UI](https://v2.chakra-ui.com/)
@@ -36,3 +38,4 @@ find /usr/lib/ -name "libgeos*"
   - для широты - значения от -90 до 90
   - для долготы - значения от -180 до 180
 - кнопка сохранить разблокируется после добавления 1-ой точки
+- расчет признака пересечения координат и опр. координат, пересекающие антимеридиан, исп. Celery + Redis 

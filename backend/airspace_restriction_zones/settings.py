@@ -19,9 +19,6 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-os.environ['GDAL_LIBRARY_PATH'] = '/usr/lib/libgdal.so'
-os.environ['GEOS_LIBRARY_PATH'] = '/usr/lib/x86_64-linux-gnu/libgeos_c.so'
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +28,9 @@ if ENVIRONMENT == 'docker':
     environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env.backend.docker'))
 else:
     environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
+
+os.environ['GDAL_LIBRARY_PATH'] = env('GDAL')
+os.environ['GEOS_LIBRARY_PATH'] = env('GEOS')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -128,6 +128,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 SIMPLE_JWT = {
@@ -135,6 +138,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+CELERY_BROKER_URL = f'redis://{env("REDIS_SERVER")}:6379/0'
+CELERY_RESULT_BACKEND = f'redis://{env("REDIS_SERVER")}:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

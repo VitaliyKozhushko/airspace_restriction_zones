@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Polygon
 
-# Register your models here.
+@admin.register(Polygon)
+class PolygonAdmin(admin.ModelAdmin):
+    list_display = ('title', 'intersection_antimeridian', 'created_at', 'updated_at')
+    search_fields = ('title',)
