@@ -15,6 +15,7 @@ import {arrToGeoJSON} from "../services/coordinate";
 function ListCoordinates() {
   const [listCoordinates, setListCoordinates] = useState([])
   const [loading, setLoading] = useState(false)
+  const [strLoading, setStrLoading] = useState('')
   const [editStr, setEditStr] = useState('')
   const [changeData, setChangeData] = useState({})
 
@@ -63,9 +64,8 @@ function ListCoordinates() {
   };
 
   const saveEditStr = async () => {
-    console.log(changeData)
-    console.log(changeData.items())
     try {
+      setStrLoading(editStr)
       const changeDataList = Object.entries(changeData);
       const data = new FormData()
       changeDataList.forEach(([key, value]) => {
@@ -75,7 +75,19 @@ function ListCoordinates() {
          data.set(key, value)
         }
       });
-      //const response = await axios.patch(`${process.env.REACT_APP_API_URL}/polygons/`)
+      const response = await axios.patch(`${process.env.REACT_APP_API_URL}/polygons/${editStr}/`, data)
+      setListCoordinates(listCoordinates =>
+        listCoordinates.map(item =>
+          item.id === +editStr ? { ...item, ...response.data } : item
+        )
+      );
+      toast({
+        description: 'Полигон успешно обновлен',
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      handleCancelStr()
     } catch (error) {
       console.log(error)
       toast({
@@ -86,13 +98,20 @@ function ListCoordinates() {
         isClosable: true,
       });
     } finally {
+      setStrLoading('')
     }
-    handleCancelStr()
   };
 
   const handleRemove = async (id) => {
     try {
-      //const response = await axios.delete(`${process.env.REACT_APP_API_URL}/polygons/`)
+      await axios.delete(`${process.env.REACT_APP_API_URL}/polygons/${id}/`)
+      setListCoordinates(listCoordinates => listCoordinates.filter(item => item.id !== id));
+      toast({
+        description: 'Полигон удален',
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log(error)
       toast({
@@ -151,16 +170,24 @@ function ListCoordinates() {
                   <div
                     key={index}
                     className={['custom-table-str', item.id % 2 === 0 ? 'blue-str' : ''].join(' ')}>
-                    <div className='table-field id-field'>{item.id}</div>
-                    {editStr === item.id
-                      ? <div className='table-field title-field'>
-                        <Input
-                          value={changeData.title}
-                          onInput={(e) => handleChange('title', e.target.value)}
+                    <div className='table-field id-field'>{index+1}</div>
+                    {strLoading === item.id
+                      ? <Spinner
+                          thickness='4px'
+                          speed='0.65s'
+                          emptyColor='gray.200'
+                          color='blue.500'
                           size='sm'
                         />
-                      </div>
-                      : <div className='table-field title-field'>{item.title}</div>}
+                      : editStr === item.id
+                          ? <div className='table-field title-field'>
+                            <Input
+                              value={changeData.title}
+                              onInput={(e) => handleChange('title', e.target.value)}
+                              size='sm'
+                            />
+                          </div>
+                          : <div className='table-field title-field'>{item.title}</div>}
                     {editStr === item.id
                       ? <div className='table-field coord-field'>
                         <Textarea

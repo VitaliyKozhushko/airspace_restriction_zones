@@ -13,8 +13,8 @@ class PolygonSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         internal_data = super().to_internal_value(data)
-        geojson = internal_data.get('polygon', {}).get('geometry')
-        if geojson:
+        if 'polygon' in data:
+            geojson = internal_data.get('polygon', {}).get('geometry')
             try:
                 geom = shape(geojson)
                 internal_data['polygon'] = GEOSGeometry(geom.wkt).wkt
