@@ -11,10 +11,12 @@
     left: 10px;
     background: transparent;
     padding: 0;
+
     .logout-img {
       width: 40px;
       height: 40px;
     }
+
     &:hover {
       background: transparent;
     }
@@ -38,17 +40,111 @@
         font-weight: 500;
       }
 
-      textarea{
+      textarea {
         pointer-events: none;
       }
     }
   }
 
-  .personal-account-content {
+  .personal-account-content:not(.list-coordinates-table) {
     display: flex;
     position: relative;
+    width: 100%;
+  }
+
+  .list-coordinates-table,
+  .custom-table {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: auto;
+    overflow: hidden;
+
+    .custom-table-header {
+      display: flex;
+      position: sticky;
+      width: 100%;
+      border-bottom: 1px solid #a0a4a9;
+      background: #edf2f7;
+
+      .table-field {
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+
+    .table-field {
+      height: auto;
+      padding: 5px 10px;
+      border-right: 1px solid #a0a4a9;
+      position: relative;
+    }
+
+    .custom-table-body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      height: auto;
+      overflow: auto;
+
+      .custom-table-str {
+        display: flex;
+        &.blue-str {
+          background: #e0efff;
+        }
+        .title-field,
+        .intersection-field,
+        .update-field,
+        .action-field,
+        .actions-block {
+          display: inline-flex;
+          align-items: center;
+        }
+        .intersection-field,
+        .update-field {
+          justify-content: center;
+        }
+        .action-field,
+        .actions-block {
+          justify-content: space-between;
+        }
+      }
+    }
+
+    .id-field {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 75px;
+    }
+
+    .title-field {
+      width: 220px;
+    }
+
+    .coord-field {
+      width: 420px;
+      .intersection-coord {
+        color: red;
+      }
+    }
+
+    .intersection-field {
+      width: 125px;
+      text-align: center;
+    }
+
+    .update-field {
+      width: 220px;
+      text-align: center;
+    }
+
+    .action-field,
+    .actions-block {
+      width: 100px;
+    }
   }
 }

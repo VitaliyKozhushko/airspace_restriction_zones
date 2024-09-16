@@ -14,17 +14,9 @@ def calculate_antimeridian(polygon_id, polygon_coordinates):
 
         if abs(lon1 - lon2) > 180:
             crosses = True
-
-            if polygon_coordinates[i + 1] not in antimeridian_coords:
-                antimeridian_coords.append(polygon_coordinates[i + 1])
+            antimeridian_coords.append(i + 1)
 
     polygon = Polygon.objects.get(id=polygon_id)
-    logger.info(f'crosses: {crosses}', )
     polygon.intersection_antimeridian = crosses
     polygon.antimeridian_coordinates = antimeridian_coords
-
-    logger.info('Полигон пересекает антимеридиан' if crosses else 'Полигон не пересекает антимеридиан')
-    logger.info(f'Координаты пересечения: {antimeridian_coords}')
-    logger.info('polygon:', polygon)
     polygon.save()
-    logger.info('Полигон успешно сохранен')
