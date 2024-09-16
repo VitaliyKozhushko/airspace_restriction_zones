@@ -1,18 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import useAxios from "../services/axiosInstance";
-import {CheckCircleIcon, CloseIcon, EditIcon, DeleteIcon} from "@chakra-ui/icons";
+import {CheckCircleIcon, CloseIcon, EditIcon, DeleteIcon, CheckIcon} from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
   Stack,
   IconButton,
-  Spinner
+  Spinner,
+  Input, Textarea,
+  useToast,
 } from '@chakra-ui/react'
+import {arrToGeoJSON} from "../services/coordinate";
 
 function ListCoordinates() {
   const [listCoordinates, setListCoordinates] = useState([])
   const [loading, setLoading] = useState(false)
+  const [editStr, setEditStr] = useState('')
+  const [changeData, setChangeData] = useState({})
 
+  const toast = useToast();
   const axios = useAxios();
 
   useEffect(() => {
@@ -23,14 +29,83 @@ function ListCoordinates() {
     try {
       setLoading(true)
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/polygons/`)
-      console.log(response.data)
       setListCoordinates(response.data)
     } catch (error) {
       console.log(error)
+      toast({
+        title: "Ошибка",
+        description: 'Не получилось загрузить список координат. Попробуййте позже',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false)
     }
   }
+
+  const handleChange = (key, value) => {
+    setChangeData({ ...changeData, [key]: value });
+  };
+
+  const handleEditStr = (item) => {
+    setEditStr(item.id)
+    let editData = {
+      title: item.title,
+      polygon: item.polygon.coordinates[0]
+    }
+    setChangeData({ ...changeData, ...editData });
+  };
+
+  const handleCancelStr = () => {
+    setEditStr('')
+    setChangeData({})
+  };
+
+  const saveEditStr = async () => {
+    console.log(changeData)
+    console.log(changeData.items())
+    try {
+      const changeDataList = Object.entries(changeData);
+      const data = new FormData()
+      changeDataList.forEach(([key, value]) => {
+        if (key === 'polygon') {
+          data.set(key, arrToGeoJSON(value))
+        } else {
+         data.set(key, value)
+        }
+      });
+      //const response = await axios.patch(`${process.env.REACT_APP_API_URL}/polygons/`)
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Ошибка",
+        description: 'Не получилось обновить полигон. Попробуйте позже',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+    }
+    handleCancelStr()
+  };
+
+  const handleRemove = async (id) => {
+    try {
+      //const response = await axios.delete(`${process.env.REACT_APP_API_URL}/polygons/`)
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "Ошибка",
+        description: 'Не получилось удалить полигон. Попробуйте позже',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+    }
+    handleCancelStr()
+  };
 
   function transformCoords(coords, intersectionsArr) {
     if (!intersectionsArr.length) {
@@ -46,7 +121,7 @@ function ListCoordinates() {
           coords.map((coord, index) => {
               const isIntersection = intersectionsArr.includes(index)
               if (isIntersection) {
-                return (<span className='intersection-coord'>
+                return (<span key={index} className='intersection-coord'>
                   {`[${coord}]`}
                 </span>)
               } else {
@@ -77,25 +152,58 @@ function ListCoordinates() {
                     key={index}
                     className={['custom-table-str', item.id % 2 === 0 ? 'blue-str' : ''].join(' ')}>
                     <div className='table-field id-field'>{item.id}</div>
-                    <div className='table-field title-field'>{item.title}</div>
-                    {transformCoords(item.polygon.coordinates[0], item.antimeridian_coordinates)}
+                    {editStr === item.id
+                      ? <div className='table-field title-field'>
+                        <Input
+                          value={changeData.title}
+                          onInput={(e) => handleChange('title', e.target.value)}
+                          size='sm'
+                        />
+                      </div>
+                      : <div className='table-field title-field'>{item.title}</div>}
+                    {editStr === item.id
+                      ? <div className='table-field coord-field'>
+                        <Textarea
+                          value={JSON.stringify(changeData.polygon)}
+                          onInput={(e) => handleChange('polygon', JSON.parse(e.target.value))}
+                          size='sm'
+                        />
+                      </div>
+                      : transformCoords(item.polygon.coordinates[0], item.antimeridian_coordinates)}
                     <div className='table-field intersection-field'>{item.intersection_antimeridian
                       ? <CheckCircleIcon color='green'/>
                       : <CloseIcon color='red'/>}</div>
                     <div className='table-field update-field'>{new Date(item.updated_at).toLocaleString()}</div>
                     <div className='table-field action-field'>
-                      <IconButton
+                      {!editStr && (<div className='actions-block'><IconButton
                         colorScheme='blue'
                         aria-label='edit polygon'
                         size='sm'
-                        icon={<EditIcon />}
-                      />
-                      <IconButton
+                        icon={<EditIcon/>}
+                        onClick={() => handleEditStr(item)}/>
+                        <IconButton
                         colorScheme='red'
                         aria-label='remove polygon'
                         size='sm'
                         icon={<DeleteIcon />}
-                      />
+                        onClick={() => handleRemove(item.id)}/>
+                      </div>)
+                    }
+                      {editStr && (<div className='actions-block'>
+                        <IconButton
+                          colorScheme='green'
+                          aria-label='confirm edit polygon'
+                          size='sm'
+                          icon={<CheckIcon/>}
+                          onClick={saveEditStr}/>
+                        <IconButton
+                          colorScheme='red'
+                          aria-label='cancel edit polygon'
+                          size='sm'
+                          icon={<CloseIcon />}
+                          onClick={handleCancelStr}/>
+                      </div>)
+                    }
                     </div>
                   </div>
                 ))}

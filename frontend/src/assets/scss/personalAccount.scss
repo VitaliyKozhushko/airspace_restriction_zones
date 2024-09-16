@@ -97,7 +97,8 @@
         .title-field,
         .intersection-field,
         .update-field,
-        .action-field {
+        .action-field,
+        .actions-block {
           display: inline-flex;
           align-items: center;
         }
@@ -105,7 +106,8 @@
         .update-field {
           justify-content: center;
         }
-        .action-field {
+        .action-field,
+        .actions-block {
           justify-content: space-between;
         }
       }
@@ -139,7 +141,8 @@
       text-align: center;
     }
 
-    .action-field {
+    .action-field,
+    .actions-block {
       width: 100px;
     }
   }
