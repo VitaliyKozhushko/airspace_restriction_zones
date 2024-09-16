@@ -20,10 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users.views import RegistrationView, LoginView, TokenRefreshView
 from rest_framework.routers import DefaultRouter
-from polygon.views import PolygonViewSet
+from polygon.views import PolygonViewSet, get_map_html
 
 router = DefaultRouter()
-router.register(r'polygons', PolygonViewSet)
+router.register(r'polygons', PolygonViewSet, basename='polygons')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/registration', RegistrationView.as_view(), name='registration'),
     path('api/login', LoginView.as_view(), name='login'),
     path('api/login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/map/', get_map_html, name='get_map_html')
 ]
 
 if settings.DEBUG:

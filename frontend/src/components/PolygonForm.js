@@ -24,6 +24,7 @@ function PolygonForm(){
   const [loading, setLoading] = useState(false);
   const [latitudeInvalid, setLatitudeInvalid] = useState(false);
   const [longitudeInvalid, setLongitudeInvalid] = useState(false);
+  const [polygonTitleInvalid, setPolygonTitleInvalid] = useState(false);
   const [saveDisable, setSaveDisable] = useState(true);
 
   const toast = useToast();
@@ -89,6 +90,7 @@ function PolygonForm(){
     const isValidLongitude = longitude.match(LONGITUDE)
     setLatitudeInvalid(!isValidLatitude)
     setLongitudeInvalid(!isValidLongitude)
+    setPolygonTitleInvalid(!polygonTitle)
     return isValidLatitude && isValidLongitude
   }
 
@@ -111,6 +113,7 @@ function PolygonForm(){
               type="text"
               value={polygonTitle}
               placeholder="Название полигона"
+              isInvalid={polygonTitleInvalid}
               onChange={(e) => setPolygonTitle(e.target.value)}/>
           </FormControl>
 

@@ -5,6 +5,7 @@ import PersonalAccount from './views/PersonalAccount';
 import {routes} from "./routes";
 import Polygon from './views/Polygon';
 import ListCoordinates from "./views/ListCoordinates";
+import PolygonsMap from "./views/PolygonsMap";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <PersonalAccount/>
             </ProtectedRoute>
           }>
+          <Route path={routes.home} element={<PolygonsMap />} />
           <Route path={routes.createPolygon} element={<Polygon />} />
           <Route path={routes.listPolygon} element={<ListCoordinates />} />
         </Route>
