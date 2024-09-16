@@ -120,6 +120,9 @@
 
     .coord-field {
       width: 420px;
+      .intersection-coord {
+        color: red;
+      }
     }
 
     .intersection-field {
