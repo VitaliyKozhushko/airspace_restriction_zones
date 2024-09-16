@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import useAxios from "../services/axiosInstance";
-import {CheckCircleIcon, CloseIcon} from "@chakra-ui/icons";
-import {Spinner} from '@chakra-ui/react';
+import {CheckCircleIcon, CloseIcon, EditIcon, DeleteIcon} from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
   Stack,
-  Box,
-  Text
+  IconButton,
+  Spinner
 } from '@chakra-ui/react'
 
 function ListCoordinates() {
@@ -70,6 +69,7 @@ function ListCoordinates() {
                 <div className='table-field coord-field'>Координаты</div>
                 <div className='table-field intersection-field'>Пересечение</div>
                 <div className='table-field update-field'>Дата обновления</div>
+                <div className='table-field action-field'>Действия</div>
               </div>
               <div className='custom-table-body'>
                 {listCoordinates.map((item, index) => (
@@ -83,6 +83,20 @@ function ListCoordinates() {
                       ? <CheckCircleIcon color='green'/>
                       : <CloseIcon color='red'/>}</div>
                     <div className='table-field update-field'>{new Date(item.updated_at).toLocaleString()}</div>
+                    <div className='table-field action-field'>
+                      <IconButton
+                        colorScheme='blue'
+                        aria-label='edit polygon'
+                        size='sm'
+                        icon={<EditIcon />}
+                      />
+                      <IconButton
+                        colorScheme='red'
+                        aria-label='remove polygon'
+                        size='sm'
+                        icon={<DeleteIcon />}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

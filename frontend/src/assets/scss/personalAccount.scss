@@ -96,13 +96,17 @@
         }
         .title-field,
         .intersection-field,
-        .update-field {
+        .update-field,
+        .action-field {
           display: inline-flex;
           align-items: center;
         }
         .intersection-field,
         .update-field {
           justify-content: center;
+        }
+        .action-field {
+          justify-content: space-between;
         }
       }
     }
@@ -133,6 +137,10 @@
     .update-field {
       width: 220px;
       text-align: center;
+    }
+
+    .action-field {
+      width: 100px;
     }
   }
 }
