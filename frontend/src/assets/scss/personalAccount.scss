@@ -39,10 +39,6 @@
       .chakra-text {
         font-weight: 500;
       }
-
-      textarea {
-        pointer-events: none;
-      }
     }
   }
 
@@ -146,5 +142,16 @@
     .actions-block {
       width: 100px;
     }
+  }
+}
+
+.polygon-map-block {
+  display: flex;
+  justify-content: center;
+  width: 700px;
+  height: 500px;
+  iframe {
+    width: 700px !important;
+    height: 500px !important;
   }
 }

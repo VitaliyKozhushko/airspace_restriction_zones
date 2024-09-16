@@ -1,18 +1,16 @@
 from celery import shared_task
 from .models import Polygon
-import logging
 
 @shared_task
 def calculate_antimeridian(polygon_id, polygon_coordinates):
-    logger = logging.getLogger(__name__)
     crosses = False
     antimeridian_coords = []
-    logger.info(f'Координаты полигона: {polygon_coordinates}')
+
     for i in range(len(polygon_coordinates) - 1):
         lon1 = polygon_coordinates[i][1]
         lon2 = polygon_coordinates[i + 1][1]
 
-        if abs(lon1 - lon2) > 180:
+        if (lon1 > 0 > lon2) or (lon1 < 0 < lon2):
             crosses = True
             antimeridian_coords.append(i + 1)
 
