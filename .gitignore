@@ -1,5 +1,4 @@
 .idea/
 
-.env.backend
+.env
 .env.backend.docker
-.env.frontend.copy
