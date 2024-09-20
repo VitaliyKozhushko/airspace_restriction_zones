@@ -27,7 +27,7 @@ ENVIRONMENT = env('ENVIRONMENT', default='local')
 if ENVIRONMENT == 'docker':
     environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env.backend.docker'))
 else:
-    environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
+    environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env.backend'))
 
 os.environ['GDAL_LIBRARY_PATH'] = env('GDAL')
 os.environ['GEOS_LIBRARY_PATH'] = env('GEOS')
