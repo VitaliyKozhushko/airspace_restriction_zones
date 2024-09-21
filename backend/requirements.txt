@@ -16,9 +16,11 @@ django-environ==0.11.2
 django-redis==5.4.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
 folium==0.17.0
 gunicorn==23.0.0
 idna==3.10
+inflection==0.5.1
 Jinja2==3.1.4
 kombu==5.4.1
 MarkupSafe==2.1.5
@@ -28,6 +30,8 @@ prompt_toolkit==3.0.47
 psycopg2==2.9.9
 PyJWT==2.9.0
 python-dateutil==2.9.0.post0
+pytz==2024.2
+PyYAML==6.0.2
 redis==5.0.8
 requests==2.32.3
 shapely==2.0.6
@@ -35,6 +39,7 @@ six==1.16.0
 sqlparse==0.5.1
 typing_extensions==4.12.2
 tzdata==2024.1
+uritemplate==4.1.1
 urllib3==2.2.3
 vine==5.1.0
 wcwidth==0.2.13

@@ -7,55 +7,217 @@ from .celery_tasks import calculate_antimeridian
 import folium, json
 from django.http import JsonResponse
 from django.core.cache import cache
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .urls_doc import polygon_structure, polygon_response
 
 class PolygonViewSet(viewsets.ModelViewSet):
     queryset = Polygon.objects.all()
     serializer_class = PolygonSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
-    def perform_create(self, serializer):
-        polygon = serializer.save()
+    @swagger_auto_schema(
+        operation_description='Создать новый полигон',
+        operation_summary='Добавление полигона',
+        tags=['Полигоны'],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'title': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='Название полигона',
+                    example=1
+                ),
+                'polygon': openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'type': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Тип геометрии',
+                            example='Polygon'
+                        ),
+                        'coordinates': openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            description='Координаты полигона',
+                            items=openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(type=openapi.TYPE_NUMBER)
+                                ),
+                                description='Массив точек полигона, каждая точка - это пара координат [широта, долгота]'
+                            ),
+                            example=[[[10.0, 30.0], [40.0, 40.0], [40.0, 20.0]]]
+                        )
+                    },
+                    description='Поле формата GeoJSON'
+                )
+            },
+            required=['title', 'polygon']
+        ),
+        responses={
+            201: openapi.Response(
+                description='Успешное получение списка счетчиков',
+                examples={
+                    'application/json': polygon_response
+                },
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties=polygon_structure
+                )
+            )
+        }
+    )
+    def create(self, request, *args, **kwargs):
+        """
+        Создание нового полигона.
+        """
+        response = super().create(request, *args, **kwargs)
+        polygon = self.get_object()
         calculate_antimeridian.delay(polygon.id, polygon.polygon.coords[0])
         self.clear_cache()
+        return response
 
-    def perform_update(self, serializer):
-        polygon = serializer.save()
+    @swagger_auto_schema(
+        operation_description='Обновить существующий полигон',
+        operation_summary='Обновление полигона',
+        tags=['Полигоны'],
+        manual_parameters=[
+            openapi.Parameter(
+                'id',
+                openapi.IN_PATH,
+                description='id полигона',
+                type=openapi.TYPE_INTEGER
+            )
+        ],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'title': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='Название полигона',
+                    example='Title polygon'
+                ),
+                'polygon': openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'type': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Тип геометрии',
+                            example='Polygon'
+                        ),
+                        'coordinates': openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            description='Координаты полигона',
+                            items=openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(type=openapi.TYPE_NUMBER)
+                                ),
+                                description='Массив точек полигона, каждая точка - это пара координат [широта, долгота]'
+                            ),
+                            example=[[[10.0, 30.0], [40.0, 40.0], [40.0, 20.0]]]
+                        )
+                    },
+                    description='Поле формата GeoJSON'
+                )
+            },
+            required=['title', 'polygon']
+        ),
+        responses={
+            200: openapi.Response(
+                description='Успешное обновление полигона',
+                examples={
+                    'application/json': polygon_response
+                },
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties=polygon_structure
+                )
+            )
+        }
+    )
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Обновление существующего полигона и сброс кэша
+        """
+        kwargs['partial'] = True
+        response = super().partial_update(request, *args, **kwargs)
+        polygon = self.get_object()
         calculate_antimeridian(polygon.id, polygon.polygon.coords[0])
         self.clear_cache()
-        return polygon
+        return response
 
+    @swagger_auto_schema(
+        operation_description='Удалить существующий полигон',
+        operation_summary='Удаление полигона',
+        tags=['Полигоны'],
+        manual_parameters=[
+            openapi.Parameter(
+                'id',
+                openapi.IN_PATH,
+                description='id полигона',
+                type=openapi.TYPE_INTEGER
+            )
+        ],
+    )
     def destroy(self, request, *args, **kwargs):
+        """
+        Удаление существующего полигона и очистка кэша
+        """
         instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance):
         instance.delete()
         self.clear_cache()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def get_queryset(self):
-        return Polygon.objects.all().order_by('-id')
-
+    @swagger_auto_schema(
+        operation_description='Получить список полигонов, с самого нового',
+        operation_summary='Список полигонов',
+        tags=['Полигоны'],
+        responses={
+            200: openapi.Response(
+                description='Успешное получение списка счетчиков',
+                examples={
+                    'application/json': [polygon_response]
+                },
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties=polygon_structure
+                    )
+                )
+            )
+        },
+    )
     def list(self, request, *args, **kwargs):
+        """
+        Возвращает список созданных полигонов с учетом пересечения антимеридиана
+        """
         cache_key = 'polygon_list'
         cached_data = cache.get(cache_key)
 
         if cached_data:
             return Response(json.loads(cached_data), status=status.HTTP_200_OK)
 
-        queryset = self.get_queryset()
+        queryset = Polygon.objects.all().order_by('-id')
         serializer = self.get_serializer(queryset, many=True)
 
         cache.set(cache_key, json.dumps(serializer.data), timeout=60 * 15)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return super().partial_update(request, *args, **kwargs)
-
     def clear_cache(self):
+        """
+        Очистка кэша
+        """
         cache.delete('polygon_list')
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 def split_polygon(coords):
     west_coords = []
@@ -133,7 +295,7 @@ def generate_map():
 
     return m
 
-# Генерируем карту с помощью Folium
+# Генерация карты с Folium
 def get_map_html(request):
     m = generate_map()
 
