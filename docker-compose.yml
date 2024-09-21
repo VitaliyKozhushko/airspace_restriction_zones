@@ -62,7 +62,6 @@ services:
       - ./backend:/app
     environment:
       - ENVIRONMENT=docker
-      - CELERY_BROKER_URL=redis://redis:6379/0
     depends_on:
       - backend
       - redis
