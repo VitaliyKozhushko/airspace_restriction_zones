@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import RegistrationView, LoginView, TokenRefreshView
+from users.views import RegistrationView, LoginView
 from rest_framework.routers import DefaultRouter
 from rest_framework.permissions import AllowAny
 from polygon.views import PolygonViewSet, get_map_html
@@ -34,7 +34,7 @@ schema_view = get_schema_view(
       license=openapi.License(name="BSD License"),
    ),
    public=True,
-    permission_classes=[AllowAny],
+   permission_classes=[AllowAny],
 )
 
 router = DefaultRouter()
@@ -48,7 +48,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/registration', RegistrationView.as_view(), name='registration'),
     path('api/login', LoginView.as_view(), name='login'),
-    path('api/login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/map/', get_map_html, name='get_map_html')
 ]
 
