@@ -138,6 +138,18 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{env("REDIS_SERVER")}:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'list_restrictions'
+    }
+}
+
 CELERY_BROKER_URL = f'redis://{env("REDIS_SERVER")}:6379/0'
 CELERY_RESULT_BACKEND = f'redis://{env("REDIS_SERVER")}:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']

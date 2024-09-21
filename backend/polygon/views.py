@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from .models import Polygon
 from .serializers import PolygonSerializer
 from .celery_tasks import calculate_antimeridian
-import folium
+import folium, json
 from django.http import JsonResponse
+from django.core.cache import cache
 
 class PolygonViewSet(viewsets.ModelViewSet):
     queryset = Polygon.objects.all()
@@ -15,10 +16,12 @@ class PolygonViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         polygon = serializer.save()
         calculate_antimeridian.delay(polygon.id, polygon.polygon.coords[0])
+        self.clear_cache()
 
     def perform_update(self, serializer):
         polygon = serializer.save()
         calculate_antimeridian(polygon.id, polygon.polygon.coords[0])
+        self.clear_cache()
         return polygon
 
     def destroy(self, request, *args, **kwargs):
@@ -28,13 +31,31 @@ class PolygonViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.delete()
+        self.clear_cache()
 
     def get_queryset(self):
         return Polygon.objects.all().order_by('-id')
 
+    def list(self, request, *args, **kwargs):
+        cache_key = 'polygon_list'
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(json.loads(cached_data), status=status.HTTP_200_OK)
+
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        cache.set(cache_key, json.dumps(serializer.data), timeout=60 * 15)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
+
+    def clear_cache(self):
+        cache.delete('polygon_list')
 
 def split_polygon(coords):
     west_coords = []
