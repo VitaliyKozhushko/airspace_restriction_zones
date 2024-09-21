@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'corsheaders',
     'polygon'
 ]
@@ -108,7 +109,10 @@ DATABASES = {
         'USER': env('USER_DB'),
         'PASSWORD': env('PASSWD_DB'),
         'NAME': env('DB'),
-        'PORT': env('PORT_DB')
+        'PORT': env('PORT_DB'),
+        'TEST': {
+                    'NAME': f'test_{env("DB")}',
+                },
     }
 }
 

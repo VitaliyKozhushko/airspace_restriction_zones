@@ -9,6 +9,7 @@
 - Frontend: [ReactJS](https://react.dev/)
 - UI Library: [Chakra UI](https://v2.chakra-ui.com/)
 - State management: [Redux](https://redux.js.org/)
+- Testing: [Django Test Framework](https://docs.djangoproject.com/en/5.1/topics/testing/tools/#)
 
 ## Команды
 
@@ -46,3 +47,4 @@ find /usr/lib/ -name "libgeos*"
 - обычный полигон выделяется синим
 - если полигон пересекает антимеридиан, то он разделяется на 2 части и выделяется красным
 - список полигонов кэшируется на 15 минут
+- создан тест для проверки создания полигона с пересечением / без пересечения антимеридиана

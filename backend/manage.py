@@ -6,7 +6,11 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'airspace_restriction_zones.settings')
+    if 'TEST' in os.environ:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "airspace_restriction_zones.test_settings")
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "airspace_restriction_zones.settings")
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
