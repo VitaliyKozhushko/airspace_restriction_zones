@@ -38,6 +38,11 @@ const AuthForm = () => {
     if (localStorage.getItem("refresh_token")) localStorage.removeItem("refresh_token")
   }, [])
 
+  useEffect(() => {
+    setUsername('')
+    setPassword('')
+  }, [isLogin]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true)
@@ -76,12 +81,6 @@ const AuthForm = () => {
     } finally {
       setLoading(false)
     }
-  };
-
-  const changeDesicion = () => {
-    setUsername('')
-    setPassword('')
-    setLogin(!isLogin)
   };
 
   return (
@@ -130,7 +129,7 @@ const AuthForm = () => {
       </form>
       <div className='change-decision'>
         <Text fontSize='xs'>{descriptionDesicion}</Text>
-        <Button colorScheme='messenger' variant='link' onClick={changeDesicion}>
+        <Button colorScheme='messenger' variant='link' onClick={() => setLogin(!isLogin)}>
           {titleBtnDesicion}
         </Button>
       </div>
