@@ -49,6 +49,5 @@
   },
   "devDependencies": {
     "sass": "^1.78.0"
-  },
-  "proxy": "http://backend:8000"
+  }
 }
