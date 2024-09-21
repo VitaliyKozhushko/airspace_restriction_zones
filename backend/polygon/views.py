@@ -19,7 +19,7 @@ class PolygonViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description='Создать новый полигон',
-        operation_summary='Добавление полигона',
+        operation_summary='Создать полигон',
         tags=['Полигоны'],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -51,7 +51,7 @@ class PolygonViewSet(viewsets.ModelViewSet):
                             example=[[[10.0, 30.0], [40.0, 40.0], [40.0, 20.0]]]
                         )
                     },
-                    description='Поле формата GeoJSON'
+                    description='Поле формата GeoJSON. Минимум 3 координаты'
                 )
             },
             required=['title', 'polygon']
@@ -74,8 +74,10 @@ class PolygonViewSet(viewsets.ModelViewSet):
         Создание нового полигона.
         """
         response = super().create(request, *args, **kwargs)
-        polygon = self.get_object()
-        calculate_antimeridian.delay(polygon.id, polygon.polygon.coords[0])
+        polygon_id = response.data.get('id')
+        if polygon_id:
+            polygon = self.get_queryset().get(id=polygon_id)
+            calculate_antimeridian.delay(polygon.id, polygon.polygon.coords[0])
         self.clear_cache()
         return response
 

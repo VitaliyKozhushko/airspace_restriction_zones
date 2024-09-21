@@ -58,8 +58,8 @@ class LoginView(generics.GenericAPIView):
                 description='Успешная аутентификация',
                 examples={
                     'application/json': {
-                        'access_token': 'eyJhbGciOiJIUzI1NiIsInR...',
-                        'refresh_token': 'dGhpcyBpcyBhIHJlZnJlc2ggdG9r...'
+                        'access': 'eyJhbGciOiJIUzI1NiIsInR...',
+                        'refresh': 'dGhpcyBpcyBhIHJlZnJlc2ggdG9r...'
                     }
                 }
             ),
