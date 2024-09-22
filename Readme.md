@@ -61,7 +61,7 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
 2. Настройте .env файл:
    - для бэка: в корне репозитория
      - для опр. путей GDAL и GEOS библиотек и выбрать путь к файлам с расширением *.so
-     - ```shell
+       ```shell
         find /usr/lib/ -name "libgdal*"
         find /usr/lib/ -name "libgeos*"
        ```
