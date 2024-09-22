@@ -3,3 +3,5 @@ __pycache__/
 *_symlink
 
 staticfiles/
+
+static_files/

@@ -12,6 +12,21 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - app-network
+    env_file:
+      - .env.backend.docker
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${USER_DB} -d ${DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
 
   backend:
     build:
@@ -32,7 +47,26 @@ services:
     env_file:
       - .env.backend.docker
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: celery-worker
+    command: celery -A airspace_restriction_zones worker --loglevel=info
+    volumes:
+      - ./backend:/app
+    environment:
+      - ENVIRONMENT=docker
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - .env.backend.docker
     networks:
       - app-network
 
@@ -48,9 +82,23 @@ services:
     environment:
       - ENVIRONMENT=docker
     env_file:
-      - .env.frontend
+      - ./frontend/.env
     networks:
       - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   pgdata:

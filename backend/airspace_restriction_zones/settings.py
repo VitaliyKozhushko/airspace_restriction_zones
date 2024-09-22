@@ -61,8 +61,10 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'corsheaders',
-    'polygon'
+    'polygon',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -108,7 +110,10 @@ DATABASES = {
         'USER': env('USER_DB'),
         'PASSWORD': env('PASSWD_DB'),
         'NAME': env('DB'),
-        'PORT': env('PORT_DB')
+        'PORT': env('PORT_DB'),
+        'TEST': {
+                    'NAME': f'test_{env("DB")}',
+                },
     }
 }
 
@@ -136,6 +141,18 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{env("REDIS_SERVER")}:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'list_restrictions'
+    }
 }
 
 CELERY_BROKER_URL = f'redis://{env("REDIS_SERVER")}:6379/0'

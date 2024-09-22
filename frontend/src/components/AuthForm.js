@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -32,6 +32,16 @@ const AuthForm = () => {
   const titleBtnAuth = isLogin ? 'Войти' : 'Зарегистрироваться'
   const descriptionDesicion = isLogin ? 'Еще нет аккаунта?' : 'Уже есть аккаунт'
   const authUrl = isLogin ? '/login' : '/registration'
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) localStorage.removeItem("access_token")
+    if (localStorage.getItem("refresh_token")) localStorage.removeItem("refresh_token")
+  }, [])
+
+  useEffect(() => {
+    setUsername('')
+    setPassword('')
+  }, [isLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,12 +81,6 @@ const AuthForm = () => {
     } finally {
       setLoading(false)
     }
-  };
-
-  const changeDesicion = () => {
-    setUsername('')
-    setPassword('')
-    setLogin(!isLogin)
   };
 
   return (
@@ -125,7 +129,7 @@ const AuthForm = () => {
       </form>
       <div className='change-decision'>
         <Text fontSize='xs'>{descriptionDesicion}</Text>
-        <Button colorScheme='messenger' variant='link' onClick={changeDesicion}>
+        <Button colorScheme='messenger' variant='link' onClick={() => setLogin(!isLogin)}>
           {titleBtnDesicion}
         </Button>
       </div>
