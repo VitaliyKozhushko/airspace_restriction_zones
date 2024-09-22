@@ -7,9 +7,9 @@
 
 1. [Требования](#main_requirements)
 2. [Стек технологий](#technology_stack)
-3. [Документация по API](#doc_api)
-4. [Требования к проекту со стороны фронтенда](#front_requirements)
-4. [Инструкция по запуску проекта](#instruction_startup)
+3. [Требования к проекту со стороны фронтенда](#front_requirements)
+4. [Документация по API](#doc_api)
+5. [Инструкция по запуску проекта](#instruction_startup)
 6. [Страницы приложения](#pages_app)
 7. [Особенности](#features)
 
@@ -41,6 +41,11 @@
 - UI Library: [Chakra UI](https://v2.chakra-ui.com/)
 - Testing: [Django Test Framework](https://docs.djangoproject.com/en/5.1/topics/testing/tools/#)
 
+## Требования к проекту со стороны фронтенда <a name="front_requirements"></a>
+
+- NodeJS v20.17.0
+- NPM v10.8.2
+
 ## Документация по API <a name="doc_api"></a>
 
 - Swagger: http://localhost:8000/swagger/
@@ -54,6 +59,11 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
 ```
 2. Настройте .env файл:
    - для бэка: в корне репозитория
+     - для опр. путей GDAL и GEOS библиотек и выбрать путь к файлам с расширением *.so
+     - ```shell
+        find /usr/lib/ -name "libgdal*"
+        find /usr/lib/ -name "libgeos*"
+       ```
    - для фронта: в папке frontend/
 3. Запустите проект:
    * (суперпользователь будет автоматически создан - login: admin, password - admin)
@@ -68,7 +78,7 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
           python manage.py runserver
           celery -A airspace_restriction_zones worker --loglevel=info
           ```
-        - перейти в папку frontend (NodeJS v20.17.0, npm v10.8.2)
+        - перейти в папку frontend
           ```shell
           npm start
           ```
@@ -88,12 +98,19 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
        ```shell
        CREATE EXTENSION postgis;
        ```
+     - запустить pgAdmin, вырать "Add New Server"
+       - во вкладке "General" в поле "Name" укзать любое название
+       - во вкладке "Connection":
+         - Host name: host.docker.internal
+         - Port:5432
+         - Username: ${USER_DB} (значение из .env)
+         - Password: ${PASSWD_DB} (значение из .env)
      
 4. Доступность:
    - админка: http://localhost:8000/admin
    - фронтенд: http://localhost:3000
 
-## Инструкция по запуску проекта <a name="pages_app"></a>
+## Страницы приложения <a name="pages_app"></a>
 
 - Главная - карта с полигонами (при их наличии)
 - Список полигонов - таблица со списком полигоном и возсожностью их редактирования и удаления
@@ -124,4 +141,3 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
   - пересекающий антимеридиан: красный, делится на 2 части
 - список полигонов кэшируется на 15 минут
 - создан тест для проверки создания полигона с пересечением / без пересечения антимеридиана
-
