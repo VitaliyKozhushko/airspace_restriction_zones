@@ -65,6 +65,7 @@ git clone https://github.com/VitaliyKozhushko/airspace_restriction_zones.git
         find /usr/lib/ -name "libgdal*"
         find /usr/lib/ -name "libgeos*"
        ```
+   - также для бэка создать .env.backend.docker для работы с docker
    - для фронта: в папке frontend/
 3. Запустите проект:
    * (суперпользователь будет автоматически создан - login: admin, password - admin)
